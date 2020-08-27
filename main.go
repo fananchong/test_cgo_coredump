@@ -3,7 +3,6 @@ package main
 /*
 extern void test_crash(char *str);
 #cgo LDFLAGS: -L. -ltest
-#cgo CFLAGS: -g3
 #include <stdlib.h>
 */
 import "C"
