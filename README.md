@@ -196,4 +196,34 @@ gs     0x0
 ```
 
 
+## 其他 - 脚本获取 cgo 所在线程
 
+
+```vim
+#!/bin/bash
+
+(gdb ./main ./core > a.log )<< GDBEOF
+thread apply all bt
+GDBEOF
+
+n=`grep "runtime.rt0_go" a.log  | awk -F' ' '{printf $1 }'`
+n=${n:1}
+line=`grep -n "runtime.rt0_go" a.log | awk -F':' '{printf $1 }'`
+
+no=$((line-n-2))
+sed -n $no','$no'p' a.log
+```
+
+输出类似：
+
+```vim
+fananchong@fananchong-ubuntu:~/test_cgo_coredump$ ./g.sh 
+
+warning: Unexpected size of section `.reg-xstate/2278388' in core file.
+
+warning: Unexpected size of section `.reg-xstate/2278388' in core file.
+warning: File "/usr/local/go/src/runtime/runtime-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load".
+Thread 4 (Thread 0x7f60186f1740 (LWP 2278383)):
+```
+
+最后一行`Thread 4 ...`就是 cgo 所在线程号
