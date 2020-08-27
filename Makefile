@@ -1,5 +1,5 @@
 all:
-	gcc -g3 -O0 -c test.c
+	gcc -I. -g3 -O0 -c test.cpp
 	ar cr libtest.a test.o
 	go build main.go
 
@@ -11,3 +11,6 @@ cdump:
 
 clean:
 	rm -f *.o main libtest.a core *.log
+
+cmain:
+	gcc -I. -g3 -O0 test.cpp main.cpp -o main

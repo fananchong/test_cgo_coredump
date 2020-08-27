@@ -1,9 +1,9 @@
 package main
 
 /*
-extern void test_crash(char *str);
-#cgo LDFLAGS: -L. -ltest
+#include "test.h"
 #include <stdlib.h>
+#cgo LDFLAGS: -L. -ltest
 */
 import "C"
 
@@ -19,6 +19,7 @@ func main() {
 
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
+	// C.test_crash2()
 	C.test_crash(cStr)
 
 	select {}
