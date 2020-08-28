@@ -1,7 +1,7 @@
 all:
 	gcc -I. -g3 -O0 -c test.cpp
 	ar cr libtest.a test.o
-	go build -gcflags="-l" main.go
+	go build -gcflags=all="-N -l" main.go
 
 godump:
 	./main > 1.log 2>&1
