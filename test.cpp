@@ -7,7 +7,7 @@
 void fn2(char *arg)
 {
     int stackvar2 = 256;
-    printf("Argument %s", arg);
+    printf("Argument %s\n", arg);
     assert(1 == 2);
 }
 
@@ -21,7 +21,7 @@ void fn1(int arg)
 
 void test_crash(char *str)
 {
-    printf("test_crash from C and here the str is from Go: %s", str);
+    printf("test_crash from C and here the str is from Go: %s\n", str);
     fn1(1092);
     printf("xxxx");
 }
