@@ -20,14 +20,14 @@ func execCommand(commandName string, params []string) bool {
 	cmd.Env = append(cmd.Env, "GOTRACEBACK=crash")
 	//显示运行的命令
 	fmt.Printf("执行命令: %s\n", strings.Join(cmd.Args, " "))
-	stdout, err := cmd.StdoutPipe()
+	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error=>", err.Error())
 		return false
 	}
 	cmd.Start() // Start开始执行c包含的命令，但并不会等待该命令完成即返回。Wait方法会返回命令的返回状态码并在命令返回后释放相关的资源。
 
-	reader := bufio.NewReader(stdout)
+	reader := bufio.NewReader(stderr)
 
 	var index int
 	//实时循环读取输出流中的一行内容
@@ -36,7 +36,7 @@ func execCommand(commandName string, params []string) bool {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		fmt.Println(line)
+		fmt.Print(line)
 		index++
 	}
 
