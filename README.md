@@ -287,3 +287,7 @@ cgo 没有因为地址为 0 而中断，而是继续在代码地址上执行 rel
 
 最新进展可关注 issue : [https://github.com/golang/go/issues/41070](https://github.com/golang/go/issues/41070)
 
+
+## 其他 - 捕获 core 文件、最后输出日志
+
+可参考 [./coredump_collector/main.go](./coredump_collector/main.go)
