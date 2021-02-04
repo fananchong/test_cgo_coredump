@@ -3,7 +3,7 @@ package main
 /*
 #include "test.h"
 #include <stdlib.h>
-#cgo LDFLAGS: -L. -ltest
+#cgo LDFLAGS: -L. -L./breakpad/lib/ -lstdc++ -lbreakpad_client -ltest
 */
 import "C"
 
