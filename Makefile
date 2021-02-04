@@ -16,4 +16,10 @@ clean:
 cmain:
 	gcc -I. -g3 -O0 test.cpp main.cpp -o main
 
+all2:
+	gcc -I. -g3 -O0 -c test.cpp
+	ar cr libtest.a test.o
+	go build -gcflags=all="-N -l" main.go
+	go build -o main2 -gcflags=all="-N -l" except_handle.go catch_except.go main2.go
+
 
