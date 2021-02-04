@@ -7,7 +7,7 @@ package main
 #include <stdlib.h>
 #include <string.h>
 
-extern void onExcept();
+extern void onExcept(int signum);
 
 static void abrthandler(int signum) {
 	onExcept(signum);
