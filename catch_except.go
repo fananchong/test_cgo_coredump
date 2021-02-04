@@ -26,7 +26,6 @@ static void __attribute__ ((constructor)) sigsetup(void) {
 	act.sa_handler = abrthandler;
 	sigaction(SIGABRT, &act, NULL);
 }
-
 */
 import "C"
 
