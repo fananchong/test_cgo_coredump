@@ -1,33 +1,35 @@
+// +build !plan9,!windows
+
 package main
 
 /*
-#include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 
-extern void OnExcept();
+extern void onExcept();
 
-static void segvhandler(int signum)
-{
-    OnExcept();
-    printf("crash !!!\n");
-    exit(1);
+static void abrthandler(int signum) {
+	onExcept(signum);
 }
 
-void sigsetup1(void)
-{
-    printf("sigsetup ...\n");
-    struct sigaction act;
-
-    memset(&act, 0, sizeof act);
-    act.sa_handler = segvhandler;
-    sigaction(SIGSEGV, &act, NULL);
-    sigaction(SIGABRT, &act, NULL);
+static void segvhandler(int signum) {
+	onExcept(signum);
+	exit(0);
 }
+
+static void __attribute__ ((constructor)) sigsetup(void) {
+	struct sigaction act;
+	memset(&act, 0, sizeof act);
+	act.sa_handler = segvhandler;
+	sigaction(SIGSEGV, &act, NULL);
+	act.sa_handler = abrthandler;
+	sigaction(SIGABRT, &act, NULL);
+}
+
 */
 import "C"
 
 func sigsetup() {
-	C.sigsetup1()
+	C.sigsetup()
 }
