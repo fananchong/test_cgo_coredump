@@ -19,7 +19,7 @@ func main() {
 	cStr := C.CString(str)
 	defer C.free(unsafe.Pointer(cStr))
 	C.test_crash2()
-	// C.test_crash(cStr)
+	C.test_crash(cStr)
 	// testCrash3()
 
 	select {}

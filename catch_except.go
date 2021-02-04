@@ -15,13 +15,13 @@ static void abrthandler(int signum) {
 
 static void segvhandler(int signum) {
 	onExcept(signum);
-	exit(0);
 }
 
 static void __attribute__ ((constructor)) sigsetup(void) {
 	struct sigaction act;
 	memset(&act, 0, sizeof act);
 	act.sa_handler = segvhandler;
+	act.sa_flags = SA_RESETHAND;
 	sigaction(SIGSEGV, &act, NULL);
 	act.sa_handler = abrthandler;
 	sigaction(SIGABRT, &act, NULL);
