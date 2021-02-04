@@ -2,7 +2,6 @@ package main
 
 /*
 #include "test.h"
-#include "catch_except.h"
 #include <stdlib.h>
 #cgo LDFLAGS: -L. -ltest
 */
@@ -14,7 +13,7 @@ import (
 )
 
 func main() {
-	C.sigsetup()
+	sigsetup()
 
 	str := "From Golang"
 	cStr := C.CString(str)

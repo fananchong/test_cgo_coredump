@@ -1,8 +1,8 @@
 all:
-	gcc -I. -g3 -O0 -c test.cpp catch_except.cpp
-	ar cr libtest.a test.o catch_except.o
+	gcc -I. -g3 -O0 -c test.cpp
+	ar cr libtest.a test.o
 	go build -gcflags=all="-N -l" main.go
-	go build -gcflags=all="-N -l" main2.go
+	go build -o main2 -gcflags=all="-N -l" except_handle.go catch_except.go main2.go
 
 godump:
 	./main > 1.log 2>&1
@@ -11,7 +11,7 @@ cdump:
 	env GOTRACEBACK=crash ./main
 
 clean:
-	rm -f *.o main libtest.a core *.log
+	rm -f *.o main main2 libtest.a core *.log
 
 cmain:
 	gcc -I. -g3 -O0 test.cpp main.cpp -o main
