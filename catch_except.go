@@ -25,8 +25,7 @@ static size_t get_executable_path( char* processdir,char* processname, size_t le
 	return (size_t)(path_end - processdir);
 }
 
-static void handler(int signum) {
-	printf("crash signum:%d\n", signum);
+static void print_core() {
 	char cmd[50];
 	sprintf(cmd, "gcore %u", getpid());
 	system(cmd);
@@ -35,20 +34,40 @@ static void handler(int signum) {
 	get_executable_path(path, processname, sizeof(path));
 	sprintf(cmd, "./gdb_print.sh ./%s ./core.%u", processname, getpid());
 	system(cmd);
-	exit(1);
 }
 
-static void __attribute__ ((constructor)) sigsetup(void) {
+
+
+static struct sigaction oldabrtact;
+static void abrthandler(int signum) {
+	printf("crash signum:%d\n", signum);
+	print_core();
+}
+
+static struct sigaction oldsegvact;
+static void segvsigaction(int signum, siginfo_t *info, void *secret) {
+	printf("crash signum:%d si_code:%d\n", signum, info->si_code);
+	if (info->si_code != 0) {
+		print_core();
+		oldsegvact.sa_sigaction(signum, info, secret);
+	} else {
+		print_core();
+	}
+}
+
+static void sigsetup(void) {
 	struct sigaction act;
 	memset(&act, 0, sizeof act);
-	act.sa_handler = handler;
-	act.sa_flags = SA_RESETHAND;
-	sigaction(SIGSEGV, &act, NULL);
-	sigaction(SIGABRT, &act, NULL);
+	act.sa_flags = SA_ONSTACK | SA_SIGINFO;
+	act.sa_sigaction = segvsigaction;
+	sigaction(SIGSEGV, &act, &oldsegvact);
+	act.sa_handler = abrthandler;
+	sigaction(SIGABRT, &act, &oldabrtact);
 }
 */
 import "C"
 
-func sigsetup() {
+// Sigsetup Sigsetup
+func Sigsetup() {
 	C.sigsetup()
 }
