@@ -6,8 +6,19 @@ cgo 中 crash ，捕获 go 堆栈、 c 堆栈
 
 ## 捕获 C++ 错误，并做善后处理
 
-例子参见 [main2.go](main2.go)
+例子参见：
+- [main2.go](main2.go)
+- [catch_except.go](catch_except.go)
 
+编译使用 
+```shell
+make all2
+```
+
+测试使用
+```shell
+./main2
+```
 
 
 ## go 调用栈
