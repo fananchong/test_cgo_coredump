@@ -260,6 +260,19 @@ Thread 4 (Thread 0x7f60186f1740 (LWP 2278383)):
 在 cgo 内捕获异常，可以避免该问题。详细参考 [catch_except.go](catch_except.go)
 
 
-## 其他 - 捕获 core 文件、最后输出日志
+## 其他 - breakpad
 
-可参考 [./coredump_collector/main.go](./coredump_collector/main.go)
+在 cgo 中使用 breakpad 暂时有 2 个问题：
+- 调用栈，显示不了符号（可能我哪里打开方式不对？）
+- 回调 golang 代码会提示：
+  ```shell
+  Dump path: ./2bfc565f-cf9e-49b2-89ef789c-f3792904.dmp
+  fatal: morestack on g0
+  Trace/breakpoint trap(吐核)
+  ```
+  
+  golang 回调代码无法正常被调用
+
+
+
+
