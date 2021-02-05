@@ -44,21 +44,25 @@ func onExcept(signum C.int) {
 	fmt.Println("crash, signum:", signum)
 
 	// 打印 Crash 堆栈
-	execCommand("./gdb_bt.sh", []string{"./main2", fmt.Sprintf("./core.%d", os.Getpid())})
+	result := execCommand("./gdb_bt.sh", []string{"./main2", fmt.Sprintf("./core.%d", os.Getpid())})
+	for _, line := range result {
+		fmt.Printf(line)
+	}
+	fmt.Println("")
 }
 
 func sigsetup() {
 	C.sigsetup()
 }
 
-func execCommand(commandName string, params []string) bool {
+func execCommand(commandName string, params []string) (result []string) {
 	cmd := exec.Command(commandName, params...)
 	//显示运行的命令
 	fmt.Printf("执行命令: %s\n", strings.Join(cmd.Args, " "))
 	pipe, err := cmd.StdoutPipe()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error=>", err.Error())
-		return false
+		return nil
 	}
 	cmd.Start() // Start开始执行c包含的命令，但并不会等待该命令完成即返回。Wait方法会返回命令的返回状态码并在命令返回后释放相关的资源。
 
@@ -71,11 +75,11 @@ func execCommand(commandName string, params []string) bool {
 		if err2 != nil || io.EOF == err2 {
 			break
 		}
-		fmt.Print(line)
+		result = append(result, line)
 		index++
 	}
 
 	cmd.Wait()
 
-	return true
+	return result
 }
