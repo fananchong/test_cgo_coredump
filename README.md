@@ -246,52 +246,7 @@ Thread 4 (Thread 0x7f60186f1740 (LWP 2278383)):
 
 ## 其他 - c 代码中访问空指针，导致堆栈被破坏
 
-
-```vim
-(gdb) bt
-#0  runtime.raise () at /usr/local/go/src/runtime/sys_linux_amd64.s:165
-#1  0x000000000044ab5b in runtime.dieFromSignal (sig=6) at /usr/local/go/src/runtime/signal_unix.go:729
-#2  0x000000000044b01e in runtime.sigfwdgo (sig=6, info=0xc000009af0, ctx=0xc0000099c0, ~r3=<optimized out>) at /usr/local/go/src/runtime/signal_unix.go:943
-#3  0x0000000000449ca4 in runtime.sigtrampgo (sig=6, info=0xc000009af0, ctx=0xc0000099c0) at /usr/local/go/src/runtime/signal_unix.go:412
-#4  0x0000000000467873 in runtime.sigtramp () at /usr/local/go/src/runtime/sys_linux_amd64.s:389
-#5  <signal handler called>
-#6  runtime.raise () at /usr/local/go/src/runtime/sys_linux_amd64.s:165
-#7  0x000000000044ab5b in runtime.dieFromSignal (sig=6) at /usr/local/go/src/runtime/signal_unix.go:729
-#8  0x000000000044ad0a in runtime.crash () at /usr/local/go/src/runtime/signal_unix.go:821
-#9  0x00000000004624c1 in runtime.fatalthrow.func1 () at /usr/local/go/src/runtime/panic.go:1175
-#10 0x0000000000435ad7 in runtime.fatalthrow () at /usr/local/go/src/runtime/panic.go:1168
-#11 0x0000000000435912 in runtime.throw (s=...) at /usr/local/go/src/runtime/panic.go:1116
-#12 0x000000000044ab15 in runtime.sigpanic () at /usr/local/go/src/runtime/signal_unix.go:679
-#13 0x00000000004946f2 in A::release (this=0x4946f2 <A::release()+20>) at test.cpp:33
-Backtrace stopped: previous frame inner to this frame (corrupt stack?)
-```
-
-c 代码如下：
-
-```c++
-class A
-{
-public:
-    void alloc(int n) { ptr = malloc(n); }
-    void release() { free(ptr); }
-
-private:
-    void *ptr;
-};
-
-// 空指针调用
-void test_crash2()
-{
-    A *a = (A *)0;
-    a->release();
-}
-```
-
-a 地址是 0 ，但是 `#13 0x00000000004946f2 in A::release (this=0x4946f2 <A::release()+20>) at test.cpp:33` 
-
-cgo 没有因为地址为 0 而中断，而是继续在代码地址上执行 release ，导致堆栈被破坏
-
-最新进展可关注 issue : [https://github.com/golang/go/issues/41070](https://github.com/golang/go/issues/41070)
+在 cgo 内捕获异常，可以避免该问题。详细参考 [catch_except.go](catch_except.go)
 
 
 ## 其他 - 捕获 core 文件、最后输出日志
