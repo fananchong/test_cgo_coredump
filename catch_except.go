@@ -25,7 +25,8 @@ static size_t get_executable_path( char* processdir,char* processname, size_t le
 	return (size_t)(path_end - processdir);
 }
 
-static void print_core() {
+static void print_core(int signum, siginfo_t *info, void *secret, struct sigaction *oldact) {
+	printf("crash signum:%d si_code:%d\n", signum, info->si_code);
 	char cmd[50];
 	sprintf(cmd, "gcore %u", getpid());
 	system(cmd);
@@ -34,25 +35,19 @@ static void print_core() {
 	get_executable_path(path, processname, sizeof(path));
 	sprintf(cmd, "./gdb_print.sh ./%s ./core.%u", processname, getpid());
 	system(cmd);
+	if (info->si_code != 0) {
+		oldact->sa_sigaction(signum, info, secret);
+	}
 }
 
-
-
 static struct sigaction oldabrtact;
-static void abrthandler(int signum) {
-	printf("crash signum:%d\n", signum);
-	print_core();
+static void abrtsigaction(int signum, siginfo_t *info, void *secret) {
+	print_core(signum, info, secret, &oldabrtact);
 }
 
 static struct sigaction oldsegvact;
 static void segvsigaction(int signum, siginfo_t *info, void *secret) {
-	printf("crash signum:%d si_code:%d\n", signum, info->si_code);
-	if (info->si_code != 0) {
-		print_core();
-		oldsegvact.sa_sigaction(signum, info, secret);
-	} else {
-		print_core();
-	}
+	print_core(signum, info, secret, &oldsegvact);
 }
 
 static void sigsetup(void) {
@@ -61,7 +56,7 @@ static void sigsetup(void) {
 	act.sa_flags = SA_ONSTACK | SA_SIGINFO;
 	act.sa_sigaction = segvsigaction;
 	sigaction(SIGSEGV, &act, &oldsegvact);
-	act.sa_handler = abrthandler;
+	act.sa_sigaction = abrtsigaction;
 	sigaction(SIGABRT, &act, &oldabrtact);
 }
 */

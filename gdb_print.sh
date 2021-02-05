@@ -3,7 +3,7 @@
 binname=$1
 corefile=$2
 
-(gdb $binname $corefile &> ./$corefile.log) <<GDBEOF
+(gdb $binname $corefile > ./$corefile.log 2>&1) <<GDBEOF
 thread apply all bt
 GDBEOF
 
