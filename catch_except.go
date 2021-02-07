@@ -35,9 +35,7 @@ static void print_core(int signum, siginfo_t *info, void *secret, struct sigacti
 	get_executable_path(path, processname, sizeof(path));
 	sprintf(cmd, "./gdb_print.sh ./%s ./core.%u", processname, getpid());
 	system(cmd);
-	if (info->si_code != 0) {
-		oldact->sa_sigaction(signum, info, secret);
-	}
+	oldact->sa_sigaction(signum, info, secret);
 }
 
 static struct sigaction oldabrtact;
