@@ -21,5 +21,6 @@ all2:
 	ar cr libtest.a test.o
 	go build -gcflags=all="-N -l" main.go
 	go build -o main2 -gcflags=all="-N -l" catch_except.go main2.go
+	go build -o main3 -gcflags=all="-N -l" except_noexit.go main3.go
 
 

@@ -20,6 +20,29 @@ make all2
 ./main2
 ```
 
+## 捕获 C++ 错误，并且不退出
+
+例子参见：
+- [main3.go](main3.go)
+- [except_noexit.go](except_noexit.go)
+
+编译使用 
+```shell
+make all2
+```
+
+测试使用
+```shell
+fananchong@ubuntu-vm:~/test_cgo_coredump$ ./main3 
+crash signum:11 si_code:1
+异常后恢复
+```
+
+**注意，这里演示的是单线程下才能正常运行**
+
+如果多线程也可以正常，这里仅提供下思路（方式很多，自己根据代码运行架构，发散）：
+- 协程启动时先获取协程号
+- [except_noexit.go](except_noexit.go) 内代码用 map 维护协程号-env
 
 ## go 调用栈
 
