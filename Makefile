@@ -11,7 +11,7 @@ cdump:
 	env GOTRACEBACK=crash ./main
 
 clean:
-	rm -f *.o main main2 libtest.a core core.* *.log
+	rm -f *.o main main2 main3 libtest.a core core.* *.log
 
 cmain:
 	gcc -I. -g3 -O0 test.cpp main.cpp -o main

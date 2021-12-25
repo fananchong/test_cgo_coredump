@@ -8,14 +8,8 @@ typedef void(*cb)(void);
 */
 import "C"
 
-import (
-	_ "fmt"
-)
-
 func main() {
 	Sigsetup2()
-
 	SafeCall(C.cb(C.test_crash2))
-
 	select {}
 }
