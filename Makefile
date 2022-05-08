@@ -1,8 +1,8 @@
 all:
 	gcc -I. -I./breakpad/include/ -g3 -O0 -c test.cpp breakpad.cpp
 	ar cr libtest.a test.o breakpad.o
-	go build -gcflags=all="-N -l" main.go
-	go build -o main2 -gcflags=all="-N -l" breakpad.go main2.go
+	CGO_ENABLED=1 go build -gcflags=all="-N -l" main.go
+	CGO_ENABLED=1 go build -o main2 -gcflags=all="-N -l" breakpad.go main2.go
 
 godump:
 	./main > 1.log 2>&1
@@ -19,8 +19,8 @@ cmain:
 all2:
 	gcc -I. -g3 -O0 -c test.cpp
 	ar cr libtest.a test.o
-	go build -gcflags=all="-N -l" main.go
-	go build -o main2 -gcflags=all="-N -l" catch_except.go main2.go
-	go build -o main3 -gcflags=all="-N -l" except_noexit.go main3.go
+	CGO_ENABLED=1 go build -gcflags=all="-N -l" main.go
+	CGO_ENABLED=1 go build -o main2 -gcflags=all="-N -l" catch_except.go main2.go
+	CGO_ENABLED=1 go build -o main3 -gcflags=all="-N -l" except_noexit.go main3.go
 
 
